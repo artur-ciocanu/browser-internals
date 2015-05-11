@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        
+        <title>Introduction to Browser Internals</title>
+
+        <meta name="description" content="Introduction to Browser Internals">
+        <meta name="author" content="Artur Ciocanu">
+        
+        <link href="resources/css.css" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="resources/reset.css">
+        <link rel="stylesheet" href="resources/main.css">
+
+        <link rel="stylesheet" href="resources/zenburn.css">
+    </head>
+    
+    <body>
+        
+        <div class="linear" id="reveal">
+            <div class="slides">
+<section style="display: block;" class="present">
+    <br><br>
+    <h1>Browser Internals</h1>
+    <h2 class="inverted">An Introduction</h2>
+    <script>
+        // Delicously hacky. Look away.
+        if( navigator.userAgent.match( /(iPhone|iPad|iPod|Android)/i ) )
+        document.write( '<p style="color: rgba(0,0,0,0.3); text-shadow: none;">('+'Tap to navigate'+')</p>' );
+    </script>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Main functionality</h2>
+
+    <p align="left">
+    The main function of a browser is to present the web resource you choose, by requesting it from the server and displaying it in the browser window. The resource is usually an HTML document, but may also be a PDF, image, or some other type of content.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Common User Interface</h2>
+
+    <p align="left">
+        All the browsers have common user interface, although it is not defined in any formal specification:
+
+        <ul>
+            <li>Address bar for inserting a URI</li>
+            <li>Back and forward buttons</li>
+            <li>Bookmarking options</li>
+            <li>Refresh and stop buttons for refreshing or stopping the loading of current documents</li>
+            <li>Home button that takes you to your home page</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>The browser's high level structure</h2>
+
+    <p align="center">
+        <img src="resources/browser-components.png" style="width:600px;height:439px"/>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>User Interface</h2>
+
+    <p align="left">
+        Includes the address bar, back/forward button, bookmarking menu, etc. Every part of the browser display except the window where you see the requested page.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Browser Engine</h2>
+
+    <p align="left">
+        Marshals actions between the UI and the rendering engine.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Rendering engine</h2>
+
+    <p align="left">
+        Responsible for displaying requested content. For example if the requested content is HTML, the rendering engine parses HTML and CSS, and displays the parsed content on the screen.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Networking</h2>
+
+    <p align="left">
+        For network calls such as HTTP requests, using different implementations for different platform behind a platform-independent interface.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>UI backend</h2>
+
+    <p align="left">
+        Used for drawing basic widgets like combo boxes and windows. This backend exposes a generic interface that is not platform specific. Underneath it uses operating system user interface methods.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>JavaScript engine</h2>
+
+    <p align="left">
+        Used to parse and execute JavaScript code.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Data Persistence</h2>
+
+    <p align="left">
+        This is a persistence layer. The browser may need to save all sorts of data locally, such as cookies. Browsers also support storage mechanisms such as localStorage, IndexedDB, WebSQL and FileSystem.
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Rendering engines</h2>
+
+    <p align="center">
+        Main flow
+    </p>
+    <p align="center">
+        <img src="resources/rendering-engines-flow.png" style="width:990px;height:166px"/>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>WebKit rendering engine</h2>
+
+    <p align="center">
+        <img src="resources/webkit-flow.png" style="width:990px;height:466px"/>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Gecko rendering engine</h2>
+
+    <p align="center">
+        <img src="resources/gecko-flow.png" style="width:990px;height:466px"/>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>A note on browser parsers</h2>
+
+    <p align="left">
+        <ul>
+            <li>HTML Parser - custom build, fault tolerant and re-entrant (discussed later)</li>
+            <li>CSS Parser - has BNF defined grammar</li>
+            <li>JavaScript Parser - has BNF defined grammer</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>HTML parsing</h2>
+
+    <p align="center">
+        <img src="resources/html-parsing-flow.png" style="width:408px;height:500px"/>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>HTML parsing - dynamic markup insertion</h2>
+
+    <p align="left">
+        <ul style="color:#FF8800">
+            <li>document.open()</li>
+            <li>document.close()</li>
+            <li>document.write()</li>
+            <li>document.writeln()</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>HTML parsing - dynamic markup insertion</h2>
+
+    <p align="left">
+        document.write() and friends blocks HTML parser, which blocks render tree construction, which subsequentely blocks layout and paint phase. In the end all of this leads to to big delays in the critical rendering path. 
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>HTML parsing - example</h2>
+
+    <p align="left">
+        <pre>
+            <code language="HTML">
+                &lt;html&gt;
+                  &lt;body&gt;
+                    &lt;p&gt;
+                      Hello World
+                    &lt;/p&gt;
+                    &lt;div&gt; &lt;img src=&quot;example.png&quot;/&gt;&lt;/div&gt;
+                  &lt;/body&gt;
+                &lt;/html&gt;
+            </code>
+        </pre>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>HTML parsing - example</h2>
+
+    <p align="center">
+        <img src="resources/dom-tree-example.png" style="width:600px;height:319px"/>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Quick quiz</h2>
+
+    <p align="left">
+        Why it's recommended to have CSS files referenced in the HEAD and JavaScript files just before the BODY closing tag?
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>CSS</h2>
+
+    <p align="left">
+        <ul>
+            <li>Tells the browser what should be part of the render tee (element with display:none is not part of the render tree)</li>
+            <li>Has to be downloaded and parsed, no incremental CSSOM construction, unlike HTML parsing</li>
+            <li>Blocks rendering</li>
+            <li>Since JavaScript might need CSSOM data, CSS also blocks JavaScript execution</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: none;">
+    <h1>THE END</h1>
+</section>
+            </div>
+
+            <!-- The navigational controls UI -->
+            <aside style="display: block;" class="controls">
+                <a class="left" href="#">◄</a>
+                <a class="right enabled" href="#">►</a>
+                <a class="up" href="#">▲</a>
+                <a class="down" href="#">▼</a>
+            </aside>
+
+            <div style="display: block;" class="progress"><span style="width: 0px;"></span></div>
+            
+        </div>
+
+<!--<div style="position: absolute; bottom: 10px; right: 100%; margin-right: -120px">-->
+<div style="position: absolute; bottom: 10px; left: 100%; margin-left: -120px">
+</div>
+        
+        <script src="resources/reveal.js"></script>
+        <script src="resources/highlight.js"></script>
+        <script>
+            // Parse the query string into a key/value object
+            var query = {};
+            location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
+                query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
+            } );
+
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                mouseWheel: false,
+                rollingLinks: true,
+                theme: query.theme || 'default', // default/neon
+                transition: 'linear' // query.transition || 'default'
+            });
+
+            hljs.initHighlightingOnLoad();
+        </script>
+
+    
+
+</body></html>
