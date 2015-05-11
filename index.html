@@ -14,6 +14,11 @@
         <link rel="stylesheet" href="resources/main.css">
 
         <link rel="stylesheet" href="resources/zenburn.css">
+        <style>
+            .highlight {
+                color: #FF8000;
+            }
+        </style>
     </head>
     
     <body>
@@ -183,7 +188,7 @@
     <h2>HTML parsing - dynamic markup insertion</h2>
 
     <p align="left">
-        document.write() and friends blocks HTML parser, which blocks render tree construction, which subsequentely blocks layout and paint phase. In the end all of this leads to to big delays in the critical rendering path. 
+        <span class="highlight">document.write()</span> and friends blocks HTML parser, which blocks render tree construction, which subsequentely blocks layout and paint phase. In the end all of this leads to to big delays in the critical rendering path. 
     </p>
 </section>
 
@@ -233,6 +238,85 @@
             <li>Since JavaScript might need CSSOM data, CSS also blocks JavaScript execution</li>
         </ul>
     </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>JavaScript</h2>
+
+    <p align="left">
+        <ul>
+            <li>SCRIPT tag blocks HTML parser</li>
+            <li>HTML 5 adds <span class="highlight">async</span> and <span class="highlight">defer</span> to mitigate HTML parser blocking</li>
+            <li>Execution is single threaded</li>
+            <li>Interaction with outside world is asynchronous. AJAX request, user events, etc all are handled asynchronously</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>JavaScript</h2>
+
+    <p align="left">
+        <ul>
+            <li>Single threaded, means no <span class="highlight">Thread.sleep()</span> or equivalent</li>
+            <li>You can't "block" JavaScript execution. You can ONLY defer execution via 
+                <span class="highlight">setInterval()</span> or <span class="highlight">setTimeout()</span></li>
+            <li>Browser uses event queue for EVERYTHING, user events, timer events, networks events, paint/redraw etc</li>
+            <li>If processing an event queue item takes too long the browser freezes</li>
+            <li>Race conditions are still possible, especially when using AJAX and shared variables</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>JavaScript</h2>
+
+    <p align="left">
+        <ul>
+            <li>There is no block level scoping, if not declared with <span class="highlight">var</span> in a function, it's globally accessible</li>
+            <li>Immediately Invoked Function Expression AKA <span class="highlight">(function(){}())</span> is used to avoid global namespace pollution</li>
+            <li><span class="highlight">try / catch / finally</span> not so useful in asynchronous context</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Demo time</h2>
+
+    <p align="left">
+        JavaScript + Web APIs + timer events + event queue visualization
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Page loading</h2>
+
+    <p align="left">
+        <ul>
+            <li>DOM ready is abused, place element just before closing BODY tag and you should be good</li>
+            <li>DOM ready fired when DOM tree is constructed</li>
+            <li>Window load fired when DOM tree is constructed and all resources have been loaded</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: block;">
+    <h2>Waiting for DOM elements</h2>
+
+    <p align="left">
+    Usually when script is added to HEAD, but depends on HTML element being available. There are two approaches:
+
+        <ul>
+            <li>"Polling" via <span class="highlight">setInterval()</span></li>
+            <li><span class="highlight">MutationObserver</span> or <span class="highlight">Mutation Events (this has been deprecated)</span>. 
+                Using <span class="highlight">MutationObserver</span> we can find out which elements are added, removed, inserted into DOM.</li>
+        </ul>
+    </p>
+</section>
+
+<section class="future" style="display: none;">
+    <h2>Conclusions</h2>
+    Browsers are really, really complex beasts. These can be seen as OS inside OS. Studying source code of open source browsers can be quite daunting, but rewarding. 'Cause the knowledge you gain from studying how stuff works under the hood leads to "mechanical sympathy". 
 </section>
 
 <section class="future" style="display: none;">
