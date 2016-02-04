@@ -1,2 +1,0 @@
-
-Bootstrapper._serverTime = '2016-01-29 19:02:22'; Bootstrapper._clientIP = '193.104.215.11'; var psj0 = 'http://nexus.ensighten.com/williamhill/prod/code/245b05a6d5c1b862d794f29879844418.js?conditionId0=209495';Bootstrapper.insertScript(psj0);var psj1 = 'http://nexus.ensighten.com/williamhill/prod/code/2d8fe5d1779671aec4f98f0e6b41792f.js?conditionId0=257321';Bootstrapper.loadScriptCallback(psj1, Bootstrapper.callOnPageSpecificCompletion);Bootstrapper.setPageSpecificDataDefinitionIds([])
